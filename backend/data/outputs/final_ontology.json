@@ -1,0 +1,152 @@
+{
+  "classes": [
+    {
+      "name": "Learner",
+      "description": "A learner in the SLE",
+      "parent": null
+    },
+    {
+      "name": "Teacher",
+      "description": "A teacher in the SLE",
+      "parent": null
+    },
+    {
+      "name": "LearningSystem",
+      "description": "The system that supports learning in the SLE",
+      "parent": null
+    },
+    {
+      "name": "LearningActivity",
+      "description": "An activity that takes place in the SLE",
+      "parent": "LearningSystem"
+    },
+    {
+      "name": "LearningResource",
+      "description": "A resource used in the SLE",
+      "parent": null
+    },
+    {
+      "name": "LearningAnalytics",
+      "description": "Data collected on learning in the SLE",
+      "parent": null
+    },
+    {
+      "name": "Learning System",
+      "description": "The infrastructure and technology that supports learning activities.",
+      "parent": null
+    },
+    {
+      "name": "Learning Activity",
+      "description": "A specific task or project that learners engage in to acquire knowledge or skills.",
+      "parent": "Learning System"
+    },
+    {
+      "name": "Learning Resource",
+      "description": "A material, tool, or technology used to support learning activities.",
+      "parent": "Learning System"
+    },
+    {
+      "name": "Learning Analytics",
+      "description": "The process of analyzing data from learning activities to inform instruction and improve student outcomes.",
+      "parent": "Learning System"
+    }
+  ],
+  "objectProperties": [
+    {
+      "name": "interactsWith",
+      "domain": "LearnerLearningActivity",
+      "range": "LearningActivity",
+      "description": "A learner interacts with a learning activity"
+    },
+    {
+      "name": "participatesIn",
+      "domain": "TeacherLearningActivity",
+      "range": "LearningActivity",
+      "description": "A teacher participates in a learning activity"
+    },
+    {
+      "name": "usesResource",
+      "domain": "LearnerLearningResource",
+      "range": "LearningResource",
+      "description": "A learner uses a learning resource"
+    },
+    {
+      "name": "supports",
+      "domain": "TeacherLearner",
+      "range": "Learner",
+      "description": "A teacher supports a learner"
+    },
+    {
+      "name": "monitors",
+      "domain": "LearningSystemLearningAnalytics",
+      "range": "LearningAnalytics",
+      "description": "The learning system monitors learning analytics"
+    },
+    {
+      "name": "adaptsTo",
+      "domain": "LearningSystemLearner",
+      "range": "Learner",
+      "description": "The learning system adapts to a learner's needs"
+    },
+    {
+      "name": "interactsWith",
+      "domain": "Learner",
+      "range": "LearningActivity",
+      "description": "The learner is engaged in the learning activity."
+    },
+    {
+      "name": "participatesIn",
+      "domain": "Learner",
+      "range": "LearningActivity",
+      "description": "The learner is involved in the learning activity."
+    },
+    {
+      "name": "usesResource",
+      "domain": "Learner",
+      "range": "LearningResource",
+      "description": "The learner uses the resource to support their learning."
+    },
+    {
+      "name": "supports",
+      "domain": "Teacher",
+      "range": "LearningActivity",
+      "description": "The teacher provides support for the learning activity."
+    },
+    {
+      "name": "monitors",
+      "domain": "LearningSystem",
+      "range": "LearningActivity",
+      "description": "The system monitors the progress of the learning activity."
+    },
+    {
+      "name": "adaptsTo",
+      "domain": "LearningSystem",
+      "range": "Learner",
+      "description": "The system adapts to the learner's needs and abilities."
+    },
+    {
+      "name": "participatesIn",
+      "domain": "LearnerLearningActivity",
+      "range": "LearningActivity",
+      "description": "The learner participates in the learning activity."
+    },
+    {
+      "name": "usesResource",
+      "domain": "LearnerLearningActivity",
+      "range": "LearningResource",
+      "description": "The learner uses a resource to support their learning."
+    },
+    {
+      "name": "monitors",
+      "domain": "LearningSystemLearningActivity",
+      "range": "LearningAnalytics",
+      "description": "The learning system tracks learner progress and performance."
+    },
+    {
+      "name": "monitors",
+      "domain": "LearningSystemLearningActivity",
+      "range": "LearningActivity",
+      "description": "The learning system monitors the progress of a specific learning activity."
+    }
+  ]
+}
