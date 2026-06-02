@@ -6,48 +6,45 @@ import { run } from '../pipeline/runPipeline.js';
 
 const router = express.Router();
 
-const upload = multer({
-  storage: multer.memoryStorage()
-});
+const upload = multer({ storage: multer.memoryStorage() });
 
-const ROOT = path.resolve('./');
-const RAW_DIR = path.join(ROOT, 'data/raw');
+const RAW_DIR = path.resolve('./data/raw');
 
 router.post('/', upload.array('files'), async (req, res) => {
   try {
     const files = req.files;
 
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+    if (!files?.length) {
+      return res.status(400).json({ error: 'No files' });
     }
 
-    // создаём папку если нет
     fs.mkdirSync(RAW_DIR, { recursive: true });
 
-    console.log(`Saving ${files.length} file(s)...`);
-
-    const savedPaths = [];
-
-    for (const file of files) {
-        const filePath = path.join(RAW_DIR, file.originalname);
-
-        fs.writeFileSync(filePath, file.buffer);
-
-        savedPaths.push(filePath);
-        }
-
-    // 🔥 ЗАПУСК PIPELINE
-    console.log('Starting pipeline...');
-    await run(savedPaths);
-
-    res.json({
-      ok: true,
-      message: 'Files uploaded and pipeline executed'
+    const savedPaths = files.map((file) => {
+      const filePath = path.join(RAW_DIR, file.originalname);
+      fs.writeFileSync(filePath, file.buffer);
+      return filePath;
     });
+
+    // SSE setup
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const result = await run(savedPaths, res);
+
+    // отправляем финальный результат
+    res.write(`data: ${JSON.stringify({
+      stage: 'result',
+      ontology: result
+    })}\n\n`);
+
+    res.end();
 
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: e.message });
+    res.end(`data: ${JSON.stringify({ stage: 'error', message: e.message })}\n\n`);
   }
 });
 

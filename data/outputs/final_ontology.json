@@ -1,0 +1,96 @@
+{
+  "classes": [
+    {
+      "name": "Learner",
+      "description": "A person who is part of the Smart Learning Environment",
+      "parent": null
+    },
+    {
+      "name": "Teacher",
+      "description": "An individual responsible for guiding and supporting Learners in the Smart Learning Environment",
+      "parent": "Learner"
+    },
+    {
+      "name": "LearningSystem",
+      "description": "The infrastructure or platform that supports the Smart Learning Environment",
+      "parent": null
+    },
+    {
+      "name": "LearningActivity",
+      "description": "A specific task or exercise within the Smart Learning Environment",
+      "parent": "LearningSystem"
+    },
+    {
+      "name": "LearningResource",
+      "description": "A material or tool used to support learning in the Smart Learning Environment",
+      "parent": "LearningSystem"
+    },
+    {
+      "name": "LearningAnalytics",
+      "description": "The process of analyzing data related to learner performance and progress in the Smart Learning Environment",
+      "parent": "LearningSystem"
+    }
+  ],
+  "objectProperties": [
+    {
+      "name": "interactsWith",
+      "domain": "Learner",
+      "range": "LearningActivity",
+      "description": "The Learner is involved in the Learning Activity"
+    },
+    {
+      "name": "participatesIn",
+      "domain": "Teacher",
+      "range": "LearningActivity",
+      "description": "The Teacher is involved in the Learning Activity"
+    },
+    {
+      "name": "usesResource",
+      "domain": "Learner",
+      "range": "LearningResource",
+      "description": "The Learner uses the Learning Resource"
+    },
+    {
+      "name": "supports",
+      "domain": "Teacher",
+      "range": "Learner",
+      "description": "The Teacher provides support to the Learner"
+    },
+    {
+      "name": "monitors",
+      "domain": "LearningSystem",
+      "range": "LearningAnalytics",
+      "description": "The Learning System monitors learner performance and progress"
+    },
+    {
+      "name": "adaptsTo",
+      "domain": "LearningSystem",
+      "range": "Learner",
+      "description": "The Learning System adapts to the Learner's needs"
+    },
+    {
+      "name": "participatesIn",
+      "domain": "Learner",
+      "range": "LearningActivity",
+      "description": "The learner participates in the learning activity"
+    },
+    {
+      "name": "supports",
+      "domain": "Teacher",
+      "range": "LearningActivity",
+      "description": "The teacher supports the learning activity"
+    },
+    {
+      "name": "monitors",
+      "domain": "Teacher",
+      "range": "Learner",
+      "description": "The teacher monitors the learner's progress"
+    },
+    {
+      "name": "participatesIn",
+      "domain": "LearningActivity",
+      "range": "Learner",
+      "description": "The learner who participates in the learning activity"
+    }
+  ]
+}

@@ -1,18 +1,23 @@
 export function safeParseOntology(text) {
+  if (!text) return null;
+
   try {
-    if (!text || typeof text !== 'string') return null;
+    // 1. пробуем как есть
+    return JSON.parse(text);
+  } catch {}
 
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) return null;
+  try {
+    // 2. ищем JSON блок
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
 
-    const obj = JSON.parse(match[0]);
+    if (start === -1 || end === -1) return null;
 
-    if (!obj || !Array.isArray(obj.classes) || !Array.isArray(obj.objectProperties)) {
-      return null;
-    }
+    const jsonStr = text.slice(start, end + 1);
 
-    return obj;
-  } catch (e) {
-    return null;
-  }
+    return JSON.parse(jsonStr);
+  } catch {}
+
+  console.log('❌ FAILED TO PARSE:', text);
+  return null;
 }

@@ -17,7 +17,11 @@ Smart Learning Environment includes:
 - Learning Analytics
 
 RULES:
-1. Use ONLY domain-relevant classes
+1. Prefer domain-relevant classes, but extract any meaningful entities from the text.
+  IMPORTANT:
+  - Use consistent naming (CamelCase, no spaces)
+  - Avoid duplicates like "Learning System" vs "LearningSystem"
+  - Reuse existing class names when possible
 2. Do NOT generate generic AI terms (Ontology, Model, Methodology)
 3. objectProperties MUST be from this list if possible:
    - interactsWith
@@ -28,6 +32,7 @@ RULES:
    - adaptsTo
 
 4. If relation is not in list, reuse closest one
+5. Use EXACT class names consistently (no variations like "Learning System" vs "LearningSystem")
 
 Return STRICT JSON:
 
@@ -59,6 +64,7 @@ ${chunk}
       model: 'llama3.2',
       prompt,
       stream: false,
+      format: 'json',
       options: { temperature: 0 }
     })
   });
@@ -68,11 +74,9 @@ ${chunk}
   const ontology = safeParseOntology(data.response);
 
   if (!ontology) {
-    console.log('⚠️ Invalid ontology skipped');
     return null;
   }
 
   const cleaned = cleanOntology(ontology);
-
   return cleaned;
 }

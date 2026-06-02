@@ -1,53 +1,60 @@
-const ALLOWED = new Set([
-  'interactsWith',
-  'participatesIn',
-  'usesResource',
-  'supports',
-  'monitors',
-  'adaptsTo'
-]);
+import { normalizeName } from "./normalizeName.js";
 
-const isValidRelation = (p) =>
-  p &&
-  typeof p.name === 'string' &&
-  typeof p.domain === 'string' &&
-  typeof p.range === 'string';
+function isValidClass(name) {
+  if (!name) return false;
 
-function normalizeProperty(prop) {
-  const normalize = (x) =>
-    typeof x === 'string'
-      ? x.replace(/\s*x\s*/g, '')
-          .replace(/\s*-\s*/g, '')
-          .replace(/\s+/g, '')
-      : x;
+  if (name.length < 3) return false;
+  if (name.length > 40) return false;
 
-  return {
-    ...prop,
-    domain: normalize(prop.domain),
-    range: normalize(prop.range)
-  };
+  // отсекаем мусор типа ABCDEFGHIJKL
+  if (/^[A-Z]{10,}$/.test(name)) return false;
+
+  return true;
 }
 
 export function cleanOntology(ontology) {
   if (!ontology) return null;
 
-  // 1. чистим classes
-  ontology.classes = (ontology.classes || [])
-    .filter(c =>
-      c &&
-      typeof c.name === 'string' &&
-      c.name.trim().length > 1
-    )
-    .map(c => ({
-      ...c,
-      name: c.name.trim()
-    }));
+  const classMap = new Map();
+  const propertyMap = new Map();
 
-  // 2. чистим + нормализуем objectProperties
-  ontology.objectProperties = (ontology.objectProperties || [])
-    .map(normalizeProperty)
-    .filter(p => ALLOWED.has(p.name))
-    .filter(isValidRelation);
+  // ===== CLASSES =====
+  for (const cls of ontology.classes || []) {
+    const name = normalizeName(cls.name);
+    if (!isValidClass(name)) continue;
 
-  return ontology;
+    if (!classMap.has(name)) {
+      classMap.set(name, {
+        name,
+        description: cls.description || '',
+        parent: normalizeName(cls.parent)
+      });
+    }
+  }
+
+  // ===== PROPERTIES =====
+  for (const prop of ontology.objectProperties || []) {
+    if (!prop?.name) continue;
+
+    const domain = normalizeName(prop.domain);
+    const range = normalizeName(prop.range);
+
+    if (!domain || !range) continue;
+
+    const key = `${prop.name}|${domain}|${range}`;
+
+    if (!propertyMap.has(key)) {
+      propertyMap.set(key, {
+        name: prop.name,
+        domain,
+        range,
+        description: prop.description || ''
+      });
+    }
+  }
+
+  return {
+    classes: Array.from(classMap.values()),
+    objectProperties: Array.from(propertyMap.values())
+  };
 }
