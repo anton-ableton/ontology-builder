@@ -1,54 +1,29 @@
-import express from 'express';
-import cors from 'cors';
-import uploadRoutes from './routes/upload.routes.js';
-import exportRoutes from './routes/export.routes.js';
-import { pipelineEvents } from './pipeline/progress.js';
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/upload', uploadRoutes);
-app.use('/api/export', exportRoutes);
-
-// 🔴 SSE clients
-const clients = new Set();
-
-app.get('/api/progress', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  res.flushHeaders();
-
-  clients.add(res);
-
-  req.on('close', () => {
-    clients.delete(res);
-  });
-});
-
-// broadcast helper
-function broadcast(data) {
-  for (const client of clients) {
-    client.write(`data: ${JSON.stringify(data)}\n\n`);
-  }
-}
-
-// connect pipeline → frontend
-pipelineEvents.on('status', (msg) => {
-  console.log(msg);
-
-  broadcast({
-    type: 'status',
-    message: msg,
-    time: Date.now()
-  });
-});
-
-const PORT = 8080;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import cases from './routes/case.routes.js'
+import upload from './routes/upload.routes.js'
+import download from './routes/export.routes.js'
+const app = express()
+app.use((req, res, next) => {
+  // Same-origin UI only; don't let unrelated browser pages trigger paid or local inference.
+  const origin = req.get('origin')
+  if (origin && new URL(origin).host !== req.get('host'))
+    return res.status(403).end()
+  next()
+})
+app.use(express.json({ limit: '2mb' }))
+app.use('/api/case', cases)
+app.use('/api/upload', upload)
+app.use('/api/export', download)
+app.use(
+  express.static(
+    fileURLToPath(new URL('../../frontend/dist/', import.meta.url))
+  )
+)
+app.use((err, req, res, next) =>
+  res.status(err.status || 400).json({ error: err.message })
+)
+const port = Number(process.env.PORT || 8080)
+const server = app.listen(port, '127.0.0.1', () =>
+  console.log('Кафедра: http://127.0.0.1:' + server.address().port)
+)

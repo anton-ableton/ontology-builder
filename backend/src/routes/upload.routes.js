@@ -1,51 +1,32 @@
-import express from 'express';
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import { run } from '../pipeline/runPipeline.js';
-
-const router = express.Router();
-
-const upload = multer({ storage: multer.memoryStorage() });
-
-const RAW_DIR = path.resolve('./data/raw');
-
-router.post('/', upload.array('files'), async (req, res) => {
-  try {
-    const files = req.files;
-
-    if (!files?.length) {
-      return res.status(400).json({ error: 'No files' });
-    }
-
-    fs.mkdirSync(RAW_DIR, { recursive: true });
-
-    const savedPaths = files.map((file) => {
-      const filePath = path.join(RAW_DIR, file.originalname);
-      fs.writeFileSync(filePath, file.buffer);
-      return filePath;
-    });
-
-    // SSE setup
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-
-    const result = await run(savedPaths, res);
-
-    // отправляем финальный результат
-    res.write(`data: ${JSON.stringify({
-      stage: 'result',
-      ontology: result
-    })}\n\n`);
-
-    res.end();
-
-  } catch (e) {
-    console.error(e);
-    res.end(`data: ${JSON.stringify({ stage: 'error', message: e.message })}\n\n`);
+import express from 'express'
+import multer from 'multer'
+import { run } from '../pipeline/runPipeline.js'
+const router = express.Router()
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { files: 4, fileSize: 8 * 1024 * 1024 }
+})
+router.post('/', upload.array('files', 4), async (req, res) => {
+  if (
+    !req.files?.length ||
+    req.files.some((f) => !f.buffer.subarray(0, 1024).includes('%PDF-'))
+  )
+    return res
+      .status(400)
+      .json({ error: 'Выберите до четырёх PDF, не более 8 МБ каждый.' })
+  res
+    .set({ 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' })
+    .flushHeaders()
+  const emit = (msg) => {
+    if (res.destroyed) throw Error('Соединение закрыто')
+    res.write('data: ' + JSON.stringify(msg) + '\n\n')
   }
-});
-
-export default router;
+  try {
+    const ontology = await run(req.files, emit)
+    emit({ stage: 'result', ontology })
+  } catch (e) {
+    if (!res.destroyed) emit({ stage: 'error', message: e.message })
+  }
+  res.end()
+})
+export default router

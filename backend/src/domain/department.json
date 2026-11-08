@@ -1,0 +1,271 @@
+{
+  "id": "department",
+  "label": "Учебный процесс кафедры",
+  "classes": {
+    "AcademicProcess": "Учебный процесс",
+    "Practice": "Практика",
+    "Thesis": "Выпускная работа",
+    "CourseOffering": "Проведение дисциплины",
+    "TeachingAssignment": "Учебное поручение",
+    "Teacher": "Преподаватель",
+    "Student": "Студент",
+    "Group": "Учебная группа",
+    "Semester": "Семестр",
+    "Discipline": "Дисциплина",
+    "Lesson": "Занятие",
+    "Task": "Задание",
+    "Outcome": "Результат обучения",
+    "Assessment": "Контрольное мероприятие",
+    "Document": "Документ",
+    "Stage": "Этап работы",
+    "Resource": "Ресурс"
+  },
+  "modules": {
+    "practice": {
+      "label": "Практика",
+      "class": "Practice",
+      "fields": {
+        "student": {
+          "label": "Студент",
+          "type": "entity",
+          "class": "Student",
+          "predicate": "hasStudent"
+        },
+        "supervisor": {
+          "label": "Руководитель",
+          "type": "entity",
+          "class": "Teacher",
+          "predicate": "hasSupervisor",
+          "negative": "не назначен",
+          "negativePredicate": "supervisorExplicitlyAbsent"
+        },
+        "report": {
+          "label": "Отчёт",
+          "type": "entity",
+          "class": "Document",
+          "predicate": "hasReport"
+        },
+        "due": {
+          "label": "Крайний срок отчёта",
+          "type": "date",
+          "predicate": "reportDueOn"
+        },
+        "submitted": {
+          "label": "Отчёт сдан",
+          "type": "date",
+          "predicate": "reportSubmittedOn",
+          "actualEvent": true
+        },
+        "review": {
+          "label": "Защита состоялась",
+          "type": "date",
+          "predicate": "defendedOn",
+          "actualEvent": true
+        }
+      },
+      "rules": [
+        {
+          "id": "П1",
+          "title": "Для практики назначен руководитель",
+          "op": "assigned",
+          "field": "supervisor"
+        },
+        {
+          "id": "П2",
+          "title": "Отчёт сдан не позднее установленного срока",
+          "op": "lte",
+          "left": "submitted",
+          "right": "due"
+        },
+        {
+          "id": "П3",
+          "title": "Отчёт сдан не позднее защиты",
+          "op": "lte",
+          "left": "submitted",
+          "right": "review"
+        }
+      ]
+    },
+    "thesis": {
+      "label": "Выпускная работа",
+      "class": "Thesis",
+      "fields": {
+        "student": {
+          "label": "Студент",
+          "type": "entity",
+          "class": "Student",
+          "predicate": "hasStudent"
+        },
+        "supervisor": {
+          "label": "Руководитель",
+          "type": "entity",
+          "class": "Teacher",
+          "predicate": "hasSupervisor",
+          "negative": "не назначен",
+          "negativePredicate": "supervisorExplicitlyAbsent"
+        },
+        "stage": {
+          "label": "Этап",
+          "type": "entity",
+          "class": "Stage",
+          "predicate": "hasStage"
+        },
+        "document": {
+          "label": "Текст ВКР в карточке",
+          "type": "entity",
+          "class": "Document",
+          "predicate": "hasDocument",
+          "negative": "не приложен",
+          "negativePredicate": "thesisTextExplicitlyMissing"
+        },
+        "due": {
+          "label": "Срок представления работы",
+          "type": "date",
+          "predicate": "thesisDueOn"
+        },
+        "submitted": {
+          "label": "Работа представлена",
+          "type": "date",
+          "predicate": "thesisSubmittedOn",
+          "actualEvent": true
+        }
+      },
+      "rules": [
+        {
+          "id": "В1",
+          "title": "Для ВКР назначен руководитель",
+          "op": "assigned",
+          "field": "supervisor"
+        },
+        {
+          "id": "В2",
+          "title": "Работа представлена в срок",
+          "op": "lte",
+          "left": "submitted",
+          "right": "due"
+        },
+        {
+          "id": "В3",
+          "title": "В карточке указан документ с текстом ВКР",
+          "op": "present",
+          "field": "document"
+        }
+      ]
+    },
+    "course": {
+      "label": "Проведение дисциплины",
+      "class": "CourseOffering",
+      "fields": {
+        "discipline": {
+          "label": "Дисциплина",
+          "type": "entity",
+          "class": "Discipline",
+          "predicate": "hasDiscipline"
+        },
+        "semester": {
+          "label": "Семестр",
+          "type": "entity",
+          "class": "Semester",
+          "predicate": "inSemester"
+        },
+        "group": {
+          "label": "Группа",
+          "type": "entity",
+          "class": "Group",
+          "predicate": "forGroup"
+        },
+        "teacher": {
+          "label": "Преподаватель",
+          "type": "entity",
+          "class": "Teacher",
+          "predicate": "taughtBy",
+          "negative": "не назначен",
+          "negativePredicate": "teacherExplicitlyAbsent"
+        },
+        "lesson": {
+          "label": "Занятие",
+          "type": "entity",
+          "class": "Lesson",
+          "predicate": "hasLesson"
+        },
+        "task": {
+          "label": "Задание",
+          "type": "entity",
+          "class": "Task",
+          "predicate": "hasTask"
+        },
+        "outcome": {
+          "label": "Результат обучения",
+          "type": "entity",
+          "class": "Outcome",
+          "predicate": "hasOutcome"
+        },
+        "assessment": {
+          "label": "Контрольное мероприятие",
+          "type": "entity",
+          "class": "Assessment",
+          "predicate": "hasAssessment"
+        }
+      },
+      "rules": [
+        {
+          "id": "Д1",
+          "title": "Для дисциплины назначен преподаватель",
+          "op": "assigned",
+          "field": "teacher"
+        }
+      ]
+    },
+    "assignment": {
+      "label": "Учебное поручение",
+      "class": "TeachingAssignment",
+      "fields": {
+        "teacher": {
+          "label": "Исполнитель",
+          "type": "entity",
+          "class": "Teacher",
+          "predicate": "assignedTo",
+          "negative": "не назначен",
+          "negativePredicate": "assigneeExplicitlyAbsent"
+        },
+        "group": {
+          "label": "Группа",
+          "type": "entity",
+          "class": "Group",
+          "predicate": "forGroup"
+        },
+        "resource": {
+          "label": "Ресурс",
+          "type": "entity",
+          "class": "Resource",
+          "predicate": "usesResource"
+        },
+        "start": {
+          "label": "Начало поручения",
+          "type": "date",
+          "predicate": "startsOn"
+        },
+        "end": {
+          "label": "Окончание поручения",
+          "type": "date",
+          "predicate": "endsOn"
+        }
+      },
+      "rules": [
+        {
+          "id": "У1",
+          "title": "Назначен исполнитель поручения",
+          "op": "assigned",
+          "field": "teacher"
+        },
+        {
+          "id": "У2",
+          "title": "Окончание не предшествует началу",
+          "op": "lte",
+          "left": "start",
+          "right": "end"
+        }
+      ]
+    }
+  }
+}

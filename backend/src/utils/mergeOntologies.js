@@ -1,48 +1,59 @@
-import { normalizeName } from "./normalizeName.js";
-
-export function mergeOntologies(ontologies) {
-  const classMap = new Map();
-  const propertyMap = new Map();
-
-  for (const ontology of ontologies) {
-    if (!ontology) continue;
-
-    // ===== CLASSES =====
-    for (const cls of ontology.classes || []) {
-      const name = normalizeName(cls.name);
-      if (!name) continue;
-
-      if (!classMap.has(name)) {
-        classMap.set(name, {
+// One accumulator per upload. Keep only distinct entities while reading chunks.
+function classId(value) {
+  if (typeof value !== 'string') return null
+  const id = value
+    .trim()
+    .split(/\s+/u)
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join('')
+  return /^[A-Z][A-Za-z0-9]{1,79}$/u.test(id) ? id : null
+}
+const description = (v) => (typeof v === 'string' ? v : '')
+export class Candidates {
+  classes = new Map()
+  properties = new Map()
+  add(ontology) {
+    for (const c of ontology.classes) {
+      const name = classId(c?.name)
+      if (name && !this.classes.has(name))
+        this.classes.set(name, {
           name,
-          description: cls.description || '',
-          parent: normalizeName(cls.parent)
-        });
-      }
+          description: description(c.description),
+          parent: classId(c.parent)
+        })
     }
-
-    // ===== PROPERTIES =====
-    for (const prop of ontology.objectProperties || []) {
-      const domain = normalizeName(prop.domain);
-      const range = normalizeName(prop.range);
-
-      if (!domain || !range) continue;
-
-      const key = `${prop.name}|${domain}|${range}`;
-
-      if (!propertyMap.has(key)) {
-        propertyMap.set(key, {
-          name: prop.name,
+    for (const p of ontology.objectProperties) {
+      const name = p?.name,
+        domain = classId(p?.domain),
+        range = classId(p?.range)
+      if (
+        typeof name !== 'string' ||
+        !/^[a-z][A-Za-z0-9]{1,79}$/u.test(name) ||
+        !domain ||
+        !range
+      )
+        continue
+      const key = [name, domain, range].join('|')
+      if (!this.properties.has(key))
+        this.properties.set(key, {
+          name,
           domain,
           range,
-          description: prop.description || ''
-        });
-      }
+          description: description(p.description)
+        })
     }
   }
-
-  return {
-    classes: Array.from(classMap.values()),
-    objectProperties: Array.from(propertyMap.values())
-  };
+  result() {
+    const known = (id) => this.classes.has(id)
+    const classes = [...this.classes.values()].map((c) => ({
+      ...c,
+      parent: c.parent !== c.name && known(c.parent) ? c.parent : null
+    }))
+    return {
+      classes,
+      objectProperties: [...this.properties.values()].filter(
+        (p) => known(p.domain) && known(p.range)
+      )
+    }
+  }
 }

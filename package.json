@@ -1,0 +1,17 @@
+{
+  "name": "department-ontology",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "setup": "npm --prefix backend ci && npm --prefix frontend ci && npm --prefix frontend run build",
+    "start": "node backend/src/server.js",
+    "test": "node --test backend/test/domain.test.js",
+    "eval:llm": "node backend/scripts/eval.js",
+    "build": "npm --prefix frontend run build",
+    "demo": "node backend/scripts/demo.js",
+    "smoke": "node --test backend/test/http.test.js",
+    "ontology": "node backend/scripts/ontology.js"
+  }
+}

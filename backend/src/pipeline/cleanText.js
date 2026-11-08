@@ -4,5 +4,5 @@ export function cleanText(text) {
     .replace(/\[[0-9]+\]/g, '')
     .replace(/\(\w+ et al\., \d{4}\)/g, '')
     .replace(/References[\s\S]*/i, '')
-    .trim();
+    .trim()
 }

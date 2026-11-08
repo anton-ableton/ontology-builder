@@ -1,0 +1,54 @@
+@prefix inst: <https://example.org/department/cases/Practice#> .
+@prefix : <https://example.org/department#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://example.org/department> a owl:Ontology .
+
+:AcademicProcess a owl:Class ; rdfs:label "Учебный процесс"@ru .
+:Practice a owl:Class ; rdfs:label "Практика"@ru .
+:Thesis a owl:Class ; rdfs:label "Выпускная работа"@ru .
+:CourseOffering a owl:Class ; rdfs:label "Проведение дисциплины"@ru .
+:TeachingAssignment a owl:Class ; rdfs:label "Учебное поручение"@ru .
+:Teacher a owl:Class ; rdfs:label "Преподаватель"@ru .
+:Student a owl:Class ; rdfs:label "Студент"@ru .
+:Group a owl:Class ; rdfs:label "Учебная группа"@ru .
+:Semester a owl:Class ; rdfs:label "Семестр"@ru .
+:Discipline a owl:Class ; rdfs:label "Дисциплина"@ru .
+:Lesson a owl:Class ; rdfs:label "Занятие"@ru .
+:Task a owl:Class ; rdfs:label "Задание"@ru .
+:Outcome a owl:Class ; rdfs:label "Результат обучения"@ru .
+:Assessment a owl:Class ; rdfs:label "Контрольное мероприятие"@ru .
+:Document a owl:Class ; rdfs:label "Документ"@ru .
+:Stage a owl:Class ; rdfs:label "Этап работы"@ru .
+:Resource a owl:Class ; rdfs:label "Ресурс"@ru .
+:Practice rdfs:subClassOf :AcademicProcess .
+:Thesis rdfs:subClassOf :AcademicProcess .
+:CourseOffering rdfs:subClassOf :AcademicProcess .
+:TeachingAssignment rdfs:subClassOf :AcademicProcess .
+:hasStudent a owl:ObjectProperty ; rdfs:range :Student .
+:hasSupervisor a owl:ObjectProperty ; rdfs:range :Teacher .
+:supervisorExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:hasReport a owl:ObjectProperty ; rdfs:range :Document .
+:reportDueOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:reportSubmittedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:defendedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:hasStage a owl:ObjectProperty ; rdfs:range :Stage .
+:hasDocument a owl:ObjectProperty ; rdfs:range :Document .
+:thesisTextExplicitlyMissing a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:thesisDueOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:thesisSubmittedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:hasDiscipline a owl:ObjectProperty ; rdfs:range :Discipline .
+:inSemester a owl:ObjectProperty ; rdfs:range :Semester .
+:forGroup a owl:ObjectProperty ; rdfs:range :Group .
+:taughtBy a owl:ObjectProperty ; rdfs:range :Teacher .
+:teacherExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:hasLesson a owl:ObjectProperty ; rdfs:range :Lesson .
+:hasTask a owl:ObjectProperty ; rdfs:range :Task .
+:hasOutcome a owl:ObjectProperty ; rdfs:range :Outcome .
+:hasAssessment a owl:ObjectProperty ; rdfs:range :Assessment .
+:assignedTo a owl:ObjectProperty ; rdfs:range :Teacher .
+:assigneeExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:usesResource a owl:ObjectProperty ; rdfs:range :Resource .
+:startsOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:endsOn a owl:DatatypeProperty ; rdfs:range xsd:date .
