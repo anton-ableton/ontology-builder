@@ -30,7 +30,9 @@ router.post('/check', (req, res) => {
   res.json({
     checks: evaluate(mod, graph),
     graph,
-    ttl: turtle(mod, graph, req.body.caseId)
+    ...(req.body.includeTurtle === false
+      ? {}
+      : { ttl: turtle(mod, graph, req.body.caseId) })
   })
 })
 router.post('/propose', async (req, res) => {

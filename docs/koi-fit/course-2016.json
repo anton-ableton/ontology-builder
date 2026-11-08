@@ -1,0 +1,14 @@
+{
+  "format": "department-case/1",
+  "title": "КОИ ФИТ · РПД 2016 · Java",
+  "module": "course",
+  "facts": {
+    "discipline": "Объектно-ориентированное программирование на Java",
+    "semester": "4",
+    "lesson": "Лабораторные занятия",
+    "assessment": "Экзамен"
+  },
+  "quotes": {
+    "semester": "Год обучения: 2, семестр: 4"
+  }
+}

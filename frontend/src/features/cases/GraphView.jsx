@@ -2,7 +2,12 @@ export default function GraphView({ mod, graph, classes, quotes }) {
   const names = Object.fromEntries(
     graph.filter(([, p]) => p === 'label').map(([id, , name]) => [id, name])
   )
-  const fields = Object.values(mod.fields)
+  const fields = new Map()
+  for (const [key, field] of Object.entries(mod.fields)) {
+    fields.set(field.predicate, { key, field })
+    if (field.negativePredicate)
+      fields.set(field.negativePredicate, { key, field })
+  }
   return (
     <details className="panel">
       <summary>Как записан этот процесс в модели</summary>
@@ -14,12 +19,7 @@ export default function GraphView({ mod, graph, classes, quotes }) {
         {graph
           .filter(([s, p]) => s === 'case' && p !== 'a')
           .map(([, p, v]) => {
-            const field = fields.find(
-              (f) => f.predicate === p || f.negativePredicate === p
-            )
-            const key = Object.keys(mod.fields).find(
-              (k) => mod.fields[k] === field
-            )
+            const { key, field } = fields.get(p)
             return (
               <div key={p} className="triple">
                 <dt>

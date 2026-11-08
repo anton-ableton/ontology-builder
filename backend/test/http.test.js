@@ -55,6 +55,19 @@ test(
       out.checks.map((r) => r.status),
       ['pass', 'fail', 'unknown']
     )
+    const compact = await (
+      await req('case/check', {
+        module: 'practice',
+        caseId: 'sample-a',
+        facts: {
+          supervisor: 'Ирина Лесова',
+          due: '2026-10-15',
+          submitted: '2026-10-17'
+        },
+        includeTurtle: false
+      })
+    ).json()
+    assert.deepEqual(compact, { checks: out.checks, graph: out.graph })
     assert.match(out.ttl, /cases\/sample-a#/)
     assert.equal(
       (

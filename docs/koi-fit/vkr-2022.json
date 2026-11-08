@@ -1,0 +1,14 @@
+{
+  "format": "department-case/1",
+  "title": "КОИ ФИТ · ВКР магистра · 2022 (публичный пример)",
+  "module": "thesis",
+  "facts": {
+    "supervisor": "Яхъяева Г.Э.",
+    "document": "Diplom_M_Kuznetsov.pdf",
+    "due": "2022-05-20"
+  },
+  "quotes": {
+    "supervisor": "Яхъяева Г.Э.",
+    "due": "Срок сдачи студентом готовой работы «20» мая 2022 г."
+  }
+}

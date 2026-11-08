@@ -1,3 +1,4 @@
+import { requestJson } from './http'
 export async function uploadFiles(files, onMessage) {
   const form = new FormData()
   files.forEach((f) => form.append('files', f))
@@ -22,26 +23,22 @@ export async function uploadFiles(files, onMessage) {
   if (!result) throw Error('Получен неполный ответ сервера')
   return result
 }
-export async function api(path, body) {
-  const res = await fetch(
-    '/api/case/' + path,
-    body
-      ? {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      }
-      : {}
-  )
-  const data = await res.json()
-  if (!res.ok) throw Error(data.error || 'Ошибка запроса')
-  return data
+
+export function readPdf(file, signal) {
+  const form = new FormData()
+  form.append('file', file)
+  return requestJson('/api/case/read-pdf', {
+    method: 'POST',
+    body: form,
+    signal
+  })
 }
-export function saveBlob(blob, name) {
-  const url = URL.createObjectURL(blob),
-    a = document.createElement('a')
-  a.href = url
-  a.download = name
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+export async function exportOwl(result) {
+  const res = await fetch('/api/export/owl', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(result)
+  })
+  if (!res.ok) throw Error('Не удалось экспортировать файл')
+  return res.blob()
 }

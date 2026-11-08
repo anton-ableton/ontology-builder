@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { api } from '../services/api'
+import { useSuggestions } from './useSuggestions'
 export default function Assistant({
   sample,
   fields,
@@ -7,47 +6,8 @@ export default function Assistant({
   model,
   onAccept
 }) {
-  const [source, setSource] = useState(sample.source),
-    [response, setResponse] = useState(null),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState('')
-  async function readFile(file) {
-    if (!file) return
-    setBusy(true)
-    setError('')
-    setResponse(null)
-    try {
-      const form = new FormData()
-      form.append('file', file)
-      const res = await fetch('/api/case/read-pdf', {
-          method: 'POST',
-          body: form
-        }),
-        data = await res.json()
-      if (!res.ok) throw Error(data.error)
-      setSource(data.text)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setBusy(false)
-    }
-  }
-  async function extract() {
-    setBusy(true)
-    setError('')
-    setResponse(null)
-    try {
-      setResponse(await api('propose', { module: sample.module, source }))
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setBusy(false)
-    }
-  }
-  function accept(x) {
-    onAccept(x.key, x.value, x.quote)
-    setResponse({ ...response, items: response.items.filter((i) => i !== x) })
-  }
+  const { source, response, error, busy, readFile, extract, accept, edit } =
+    useSuggestions(sample, onAccept)
   return (
     <details className="panel">
       <summary>Предложить факты из текста</summary>
@@ -76,11 +36,7 @@ export default function Assistant({
           value={source}
           maxLength={4000}
           disabled={busy}
-          onChange={(e) => {
-            setSource(e.target.value)
-            setResponse(null)
-            setError('')
-          }}
+          onChange={(e) => edit(e.target.value)}
         />
       </label>
       <button
