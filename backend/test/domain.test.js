@@ -131,3 +131,50 @@ test('PDF class candidates use profile terms, not substrings; repeated property 
   assert.equal(xml.match(/<owl:ObjectProperty /g).length, 1)
   assert.match(xml, /owl:unionOf rdf:parseType="Collection"/)
 })
+
+test('GigaChat exchanges the personal credentials, reuses the token and requests a structured answer', async () => {
+  const config = settings({ GIGACHAT_CREDENTIALS: 'test-key' }, 'gigachat')
+  const schema = { type: 'object' }
+  let auth = 0
+  const request = async (url, options) => {
+    if (url.endsWith('/oauth')) {
+      auth++
+      assert.equal(options.headers.Authorization, 'Basic test-key')
+      assert.equal(options.body, 'scope=GIGACHAT_API_PERS')
+      assert.match(options.headers.RqUID, /^[\da-f-]{36}$/)
+      return Response.json({
+        access_token: 'test-token',
+        expires_at: Date.now() + 1800000
+      })
+    }
+    assert.equal(url, 'https://api.giga.chat/v1/chat/completions')
+    assert.equal(options.headers.Authorization, 'Bearer test-token')
+    const body = JSON.parse(options.body)
+    assert.equal(body.model, 'GigaChat-3-Ultra')
+    assert.deepEqual(body.response_format, {
+      type: 'json_schema',
+      schema,
+      strict: true
+    })
+    return Response.json({
+      model: 'GigaChat-3-Ultra:test',
+      choices: [{ message: { content: '{"items":[]}' } }]
+    })
+  }
+  for (const result of await Promise.all(
+    [1, 2].map(() => generateJSON([], schema, { config, request }))
+  ))
+    assert.deepEqual(result, { items: [] })
+  assert.equal(auth, 1)
+  await assert.rejects(
+    generateJSON([], schema, { config: settings({}, 'gigachat'), request }),
+    /GIGACHAT_CREDENTIALS/
+  )
+})
+test('Quoted day in a Russian deadline retains its original citation', async () => {
+  const quote = 'Срок сдачи студентом готовой работы «20» мая 2022 г.'
+  const result = await propose(moduleOf('thesis'), quote, async () => ({
+    items: [{ sentence: 1, key: 'due', value: '«20» мая 2022 г.' }]
+  }))
+  assert.deepEqual(result.items, [{ key: 'due', value: '2022-05-20', quote }])
+})

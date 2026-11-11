@@ -5,7 +5,9 @@ const months =
 export function isoDate(text) {
   let m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/u.exec(text)
   if (m) return m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0')
-  m = /^(\d{1,2})\s+(\p{L}+)\s+(\d{4})(?:\s+(?:г\.?|года))?$/iu.exec(text)
+  // Assignment forms often quote the day, e.g. «20» мая 2022 г.
+  const prose = text.replace(/^«(\d{1,2})»/, '$1')
+  m = /^(\d{1,2})\s+(\p{L}+)\s+(\d{4})(?:\s+(?:г\.?|года))?$/iu.exec(prose)
   if (m && months.includes(m[2].toLowerCase()))
     return (
       m[3] +

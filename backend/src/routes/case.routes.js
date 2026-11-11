@@ -10,7 +10,7 @@ import {
   InputError
 } from '../domain/model.js'
 import { propose } from '../llm/extract.js'
-import { settings } from '../llm/client.js'
+import { generateJSON, settings } from '../llm/client.js'
 const router = express.Router()
 router.post('/read-pdf', pdfUpload.single('file'), async (req, res) => {
   try {
@@ -38,7 +38,23 @@ router.post('/check', (req, res) => {
 router.post('/propose', async (req, res) => {
   const mod = moduleOf(req.body?.module)
   try {
-    res.json(await propose(mod, req.body.source))
+    const provider = req.body.provider
+    if (
+      provider !== undefined &&
+      !['ollama', 'gigachat', 'openrouter'].includes(provider)
+    )
+      throw new InputError('Неизвестный провайдер')
+    const config = settings(process.env, provider)
+    let model = config.model
+    const result = await propose(mod, req.body.source, (messages, schema) =>
+      generateJSON(messages, schema, {
+        config,
+        onModel: (name) => {
+          model = name
+        }
+      })
+    )
+    res.json({ ...result, provider: config.provider, model })
   } catch (e) {
     res.status(e instanceof InputError ? 400 : 502).json({ error: e.message })
   }

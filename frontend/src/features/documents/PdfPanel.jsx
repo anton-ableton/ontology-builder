@@ -9,8 +9,11 @@ export default function PdfPanel({ provider }) {
         Получите черновик классов и отношений из текста. Эти предложения не
         меняют проверенную модель. До 4 файлов, каждый до 8 МБ.
       </p>
-      {provider === 'openrouter' && (
-        <p>Текст выбранных файлов будет отправлен в OpenRouter.</p>
+      {provider !== 'ollama' && (
+        <p>
+          Текст выбранных файлов будет отправлен в{' '}
+          {provider === 'gigachat' ? 'GigaChat' : 'OpenRouter'}.
+        </p>
       )}
       <input
         type="file"

@@ -20,12 +20,27 @@ export function useSuggestions(sample, onAccept) {
       setBusy(false)
     }
   }
-  async function extract() {
+  async function extract(mode) {
     setBusy(true)
     setError('')
     setResponse(null)
     try {
-      setResponse(await proposeFacts(sample.module, source))
+      const providers = mode === 'compare' ? ['gigachat', 'openrouter'] : [mode]
+      const results = await Promise.all(
+        providers.map(async (provider) => {
+          try {
+            return await proposeFacts(
+              sample.module,
+              source,
+              undefined,
+              provider
+            )
+          } catch (e) {
+            return { provider, error: e.message }
+          }
+        })
+      )
+      setResponse(results)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -34,7 +49,16 @@ export function useSuggestions(sample, onAccept) {
   }
   function accept(x) {
     onAccept(x.key, x.value, x.quote)
-    setResponse({ ...response, items: response.items.filter((i) => i !== x) })
+    setResponse(
+      response.map((result) =>
+        result.error
+          ? result
+          : {
+            ...result,
+            items: result.items.filter((item) => item.key !== x.key)
+          }
+      )
+    )
   }
   function edit(text) {
     setSource(text)
