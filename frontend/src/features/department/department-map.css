@@ -1,0 +1,160 @@
+.map-toolbar,
+.scenario-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.map-toolbar p {
+  max-width: 620px;
+  margin: 0;
+  color: #465f55;
+}
+.map-toolbar button {
+  flex-shrink: 0;
+}
+.map-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.map-panel {
+  padding: 1.4rem;
+}
+.person-node {
+  background: #173e35;
+  padding: 0.85rem 1.1rem;
+  border-radius: 10px;
+  color: #deece5;
+}
+.person-node select {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #173e35;
+  margin-bottom: 0;
+}
+.map-branches {
+  margin-left: 1rem;
+}
+.map-branch {
+  position: relative;
+  border-left: 2px solid #93afa0;
+  padding: 1rem 0 0.2rem 1.25rem;
+}
+.map-branch:last-child {
+  border-color: transparent;
+}
+.map-branch:last-child::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  height: 1.8rem;
+  border-left: 2px solid #93afa0;
+}
+.map-branch::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 1.8rem;
+  width: 1rem;
+  border-bottom: 2px solid #93afa0;
+}
+.process-node {
+  background: #f7faf7;
+  width: 100%;
+  text-align: left;
+  border-radius: 9px;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.25rem;
+}
+.process-node small,
+.process-node span,
+.check strong,
+.role-list small {
+  display: block;
+}
+.process-node small {
+  font-variant-numeric: tabular-nums;
+}
+.process-node span {
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+.empty-branch {
+  color: #59675f;
+  font-size: 0.9rem;
+}
+.process-picker {
+  margin-bottom: 0.7rem;
+}
+.process-detail h3 {
+  margin-top: 1.2rem;
+}
+.process-detail a,
+.person-link {
+  color: #1e5b49;
+  text-underline-offset: 0.2em;
+}
+.role-list,
+.process-facts {
+  margin: 0.3rem 0 1rem;
+}
+.role-list > div,
+.process-facts > div {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.6rem;
+  border-bottom: 1px solid #d7e2da;
+  padding: 0.55rem 0;
+}
+.role-list dd,
+.process-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.role-list small {
+  color: #53695e;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.person-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  text-decoration: underline;
+  text-align: left;
+}
+.person-link:hover {
+  background: transparent;
+  color: #173e35;
+}
+.scenario-note,
+.scenario-form {
+  padding: 0.75rem 1rem;
+  background: #f8f2dd;
+  border-radius: 8px;
+}
+.scenario-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.scenario-form h3 {
+  margin-top: 0;
+}
+@media (max-width: 760px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+  .map-toolbar,
+  .scenario-note {
+    align-items: start;
+    flex-direction: column;
+  }
+  .map-panel {
+    margin-bottom: 0;
+  }
+}

@@ -1,0 +1,110 @@
+@prefix : <https://example.org/department#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://example.org/department> a owl:Ontology .
+
+:AcademicProcess a owl:Class ; rdfs:label "Учебный процесс"@ru .
+:Practice a owl:Class ; rdfs:label "Практика"@ru .
+:Thesis a owl:Class ; rdfs:label "Выпускная работа"@ru .
+:CourseOffering a owl:Class ; rdfs:label "Проведение дисциплины"@ru .
+:TeachingAssignment a owl:Class ; rdfs:label "Учебное поручение"@ru .
+:Teacher a owl:Class ; rdfs:label "Преподаватель"@ru .
+:Student a owl:Class ; rdfs:label "Студент"@ru .
+:Group a owl:Class ; rdfs:label "Учебная группа"@ru .
+:Semester a owl:Class ; rdfs:label "Семестр"@ru .
+:Discipline a owl:Class ; rdfs:label "Дисциплина"@ru .
+:Lesson a owl:Class ; rdfs:label "Занятие"@ru .
+:Task a owl:Class ; rdfs:label "Задание"@ru .
+:Outcome a owl:Class ; rdfs:label "Результат обучения"@ru .
+:Assessment a owl:Class ; rdfs:label "Контрольное мероприятие"@ru .
+:Document a owl:Class ; rdfs:label "Документ"@ru .
+:Stage a owl:Class ; rdfs:label "Этап работы"@ru .
+:Resource a owl:Class ; rdfs:label "Ресурс"@ru .
+:Practice rdfs:subClassOf :AcademicProcess .
+:Thesis rdfs:subClassOf :AcademicProcess .
+:CourseOffering rdfs:subClassOf :AcademicProcess .
+:TeachingAssignment rdfs:subClassOf :AcademicProcess .
+:hasStudent a owl:ObjectProperty ; rdfs:range :Student .
+:hasSupervisor a owl:ObjectProperty ; rdfs:range :Teacher .
+:supervisorExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:hasReport a owl:ObjectProperty ; rdfs:range :Document .
+:reportDueOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:reportSubmittedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:defendedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:hasStage a owl:ObjectProperty ; rdfs:range :Stage .
+:hasDocument a owl:ObjectProperty ; rdfs:range :Document .
+:thesisTextExplicitlyMissing a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:thesisDueOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:thesisSubmittedOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:hasDiscipline a owl:ObjectProperty ; rdfs:range :Discipline .
+:inSemester a owl:ObjectProperty ; rdfs:range :Semester .
+:forGroup a owl:ObjectProperty ; rdfs:range :Group .
+:taughtBy a owl:ObjectProperty ; rdfs:range :Teacher .
+:teacherExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:hasLesson a owl:ObjectProperty ; rdfs:range :Lesson .
+:hasTask a owl:ObjectProperty ; rdfs:range :Task .
+:hasOutcome a owl:ObjectProperty ; rdfs:range :Outcome .
+:hasAssessment a owl:ObjectProperty ; rdfs:range :Assessment .
+:assignedTo a owl:ObjectProperty ; rdfs:range :Teacher .
+:assigneeExplicitlyAbsent a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:usesResource a owl:ObjectProperty ; rdfs:range :Resource .
+:startsOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+:endsOn a owl:DatatypeProperty ; rdfs:range xsd:date .
+@prefix k: <https://example.org/department/koi#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+:Participation a owl:Class .
+:Role a owl:Class .
+:Organization a owl:Class .
+:Department a owl:Class ; rdfs:subClassOf :Organization .
+:explicitlyUnassigned a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+:participant a owl:ObjectProperty ; rdfs:range :Teacher .
+:inProcess a owl:ObjectProperty .
+:inRole a owl:ObjectProperty ; rdfs:range :Role .
+:onBehalfOf a owl:ObjectProperty ; rdfs:range :Organization .
+:inDepartment a owl:ObjectProperty ; rdfs:range :Department .
+k:palchunov a :Teacher ; rdfs:label "Д. Е. Пальчунов"@ru .
+k:yakhyaeva a :Teacher ; rdfs:label "Г. Э. Яхъяева"@ru .
+k:rylov a :Teacher ; rdfs:label "В. Ю. Рылов"@ru .
+k:nsu a :Organization ; rdfs:label "Новосибирский государственный университет"@ru .
+k:koi a :Department ; rdfs:label "Кафедра общей информатики ФИТ НГУ"@ru .
+k:sobolev a :Organization ; rdfs:label "Институт математики им. С. Л. Соболева СО РАН"@ru .
+k:author a :Role ; rdfs:label "Автор программы"@ru .
+k:lecturer a :Role ; rdfs:label "Лектор курса"@ru .
+k:teacher a :Role ; rdfs:label "Преподаватель группы"@ru .
+k:universitySupervisor a :Role ; rdfs:label "Руководитель от НГУ"@ru .
+k:hostSupervisor a :Role ; rdfs:label "Руководитель от организации"@ru .
+k:thesisSupervisor a :Role ; rdfs:label "Руководитель ВКР"@ru .
+k:chair a :Role ; rdfs:label "Заведующий кафедрой на титуле"@ru .
+k:logic a :Discipline ; rdfs:label "Прикладная логика"@ru ; :inDepartment k:koi ; dct:source k:logic_source .
+k:logic_source a :Document ; rdfs:label "Проект программы дисциплины"@ru ; dct:date "2012"^^xsd:gYear ; dct:identifier <https://fit-old.nsu.ru/data_/docs/mag/program/2012-2014/PL.pdf> ; dct:description "с. 1–2"@ru .
+k:logic_author a :Participation ; :inProcess k:logic ; :inRole k:author ; :onBehalfOf k:koi ; :participant k:palchunov ; dct:source k:logic_source .
+k:java a :Discipline ; rdfs:label "Объектно-ориентированное программирование на Java"@ru ; :inDepartment k:koi ; dct:source k:java_source .
+k:java_source a :Document ; rdfs:label "Рабочая программа дисциплины"@ru ; dct:date "2016"^^xsd:gYear ; dct:identifier <https://fit-old.nsu.ru/data_/docs/bak/OOP/4_RPD/09.03.01/_09.03.01_B13_rpd.pdf> ; dct:description "титул и сведения о разработчике"@ru .
+k:java_author a :Participation ; :inProcess k:java ; :inRole k:author ; :onBehalfOf k:koi ; :participant k:rylov ; dct:source k:java_source .
+k:java_semester a :Semester ; rdfs:label "4"@ru .
+k:java :inSemester k:java_semester .
+[] a rdf:Statement ; rdf:subject k:java ; rdf:predicate :inSemester ; rdf:object k:java_semester ; dct:source k:java_source .
+k:java_lesson a :Lesson ; rdfs:label "Лабораторные занятия"@ru .
+k:java :hasLesson k:java_lesson .
+[] a rdf:Statement ; rdf:subject k:java ; rdf:predicate :hasLesson ; rdf:object k:java_lesson ; dct:source k:java_source .
+k:java_assessment a :Assessment ; rdfs:label "Экзамен"@ru .
+k:java :hasAssessment k:java_assessment .
+[] a rdf:Statement ; rdf:subject k:java ; rdf:predicate :hasAssessment ; rdf:object k:java_assessment ; dct:source k:java_source .
+k:practice2018 a :Practice ; rdfs:label "Учебная практика в ИМ СО РАН"@ru ; :inDepartment k:koi ; dct:source k:practice2018_source .
+k:practice2018_source a :Document ; rdfs:label "Приказ о направлении на практику"@ru ; dct:date "2018"^^xsd:gYear ; dct:identifier <https://fit-old.nsu.ru/data_/docs/prikazy/practika/Pract_uch_bak_280918.pdf> ; dct:description "п. 2, строка об ИМ СО РАН"@ru .
+k:practice2018_universitySupervisor a :Participation ; :inProcess k:practice2018 ; :inRole k:universitySupervisor ; :onBehalfOf k:nsu ; :participant k:palchunov ; dct:source k:practice2018_source .
+k:practice2018_hostSupervisor a :Participation ; :inProcess k:practice2018 ; :inRole k:hostSupervisor ; :onBehalfOf k:sobolev ; :participant k:palchunov ; dct:source k:practice2018_source .
+k:thesis2022 a :Thesis ; rdfs:label "ВКР о диверсификации портфеля ценных бумаг"@ru ; :inDepartment k:koi ; dct:source k:thesis2022_source .
+k:thesis2022_source a :Document ; rdfs:label "Магистерская ВКР и задание"@ru ; dct:date "2022"^^xsd:gYear ; dct:identifier <https://bnct.inp.nsk.su/students/Diplom_M_Kuznetsov.pdf> ; dct:description "с. 1–2"@ru .
+k:thesis2022_chair a :Participation ; :inProcess k:thesis2022 ; :inRole k:chair ; :onBehalfOf k:koi ; :participant k:palchunov ; dct:source k:thesis2022_source .
+k:thesis2022_thesisSupervisor a :Participation ; :inProcess k:thesis2022 ; :inRole k:thesisSupervisor ; :onBehalfOf k:koi ; :participant k:yakhyaeva ; dct:source k:thesis2022_source .
+k:thesis2022_document a :Document ; rdfs:label "Diplom_M_Kuznetsov.pdf"@ru .
+k:thesis2022 :hasDocument k:thesis2022_document .
+[] a rdf:Statement ; rdf:subject k:thesis2022 ; rdf:predicate :hasDocument ; rdf:object k:thesis2022_document ; dct:source k:thesis2022_source .
+k:thesis2022 :thesisDueOn "2022-05-20"^^xsd:date .
+[] a rdf:Statement ; rdf:subject k:thesis2022 ; rdf:predicate :thesisDueOn ; rdf:object "2022-05-20"^^xsd:date ; dct:source k:thesis2022_source .
+k:programmingLogic a :Discipline ; rdfs:label "Логические основы программирования"@ru ; :inDepartment k:koi ; dct:source k:programmingLogic_source .
+k:programmingLogic_source a :Document ; rdfs:label "Сообщение НГУ о хакатоне «Тезис Чёрча»"@ru ; dct:date "2025"^^xsd:gYear ; dct:identifier <https://t.me/s/nsuniversity/7114> ; dct:description "абзац о лекторах"@ru .
+k:programmingLogic_lecturer a :Participation ; :inProcess k:programmingLogic ; :inRole k:lecturer ; :onBehalfOf k:koi ; :participant k:yakhyaeva ; dct:source k:programmingLogic_source .

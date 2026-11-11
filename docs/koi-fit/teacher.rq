@@ -1,0 +1,14 @@
+PREFIX : <https://example.org/department#>
+PREFIX k: <https://example.org/department/koi#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+SELECT ?process ?role ?organization ?source WHERE {
+  VALUES ?teacher { k:palchunov }
+  ?participation :participant ?teacher ; :inProcess ?object ; :inRole ?r ;
+                 :onBehalfOf ?org ; dct:source ?doc .
+  ?object rdfs:label ?process .
+  ?r rdfs:label ?role .
+  ?org rdfs:label ?organization .
+  ?doc dct:identifier ?source .
+}
+ORDER BY ?process ?role

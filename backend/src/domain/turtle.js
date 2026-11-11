@@ -38,7 +38,7 @@ function serializeSchema() {
   return lines.join('\n')
 }
 // The catalog is immutable for the lifetime of the server.
-const schema = serializeSchema()
+export const schema = serializeSchema()
 export function turtle(mod, graph, caseId = mod.class) {
   if (typeof caseId !== 'string' || !/^[A-Za-z0-9_-]{1,80}$/.test(caseId))
     throw new InputError('Недопустимый идентификатор процесса')

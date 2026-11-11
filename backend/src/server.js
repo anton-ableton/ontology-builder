@@ -1,5 +1,6 @@
 import express from 'express'
 import { fileURLToPath } from 'node:url'
+import department from './routes/department.routes.js'
 import cases from './routes/case.routes.js'
 import upload from './routes/upload.routes.js'
 import download from './routes/export.routes.js'
@@ -12,6 +13,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(express.json({ limit: '2mb' }))
+app.use('/api/department', department)
 app.use('/api/case', cases)
 app.use('/api/upload', upload)
 app.use('/api/export', download)
